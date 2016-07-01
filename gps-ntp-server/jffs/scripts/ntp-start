@@ -1,0 +1,70 @@
+#!/bin/sh
+local DEV_GPS=/dev/ttyUSB0
+
+set_ntp_ready()
+{
+  #/bin/sleep 1
+  #/usr/bin/killall ntp
+  #/bin/sleep 1
+  /usr/sbin/nvram set ntp_ready=$1
+  /usr/sbin/nvram unset ntp_server0
+  /usr/sbin/nvram unset ntp_server1
+  /usr/sbin/nvram unset ntp_server_tried
+  #/usr/sbin/nvram commit
+}
+
+# start ntpd, if it's not already running
+/bin/pidof ntpd > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+
+  # create some folders used by ntpd, otherwise it don't work
+  /bin/mkdir -p /tmp/etc/ntp
+  /bin/mkdir -p /tmp/var/spool/ntp
+  
+  # copy the NTP drift file to /tmp folder
+  /bin/cp -p /jffs/ntp/ntp.drift /tmp/etc/ntp/.
+
+  set_ntp_ready 0
+            
+  # initialize ntpd
+  if [ ! -e ${DEV_GPS} ]; then
+    set_ntp_ready 0
+      
+    local N=1
+    while [ $N -lt 30 ]; do
+      if [ -e ${DEV_GPS} ]; then
+        /native/bin/setserial ${DEV_GPS} low_latency
+        local LDATTACH_CMD="/native/bin/ldattach pps ${DEV_GPS}"
+        local LDATTACH_PID=$(/bin/echo $(/bin/ps w | /bin/grep -i "$LDATTACH_CMD" | /bin/grep -v grep) | /usr/bin/cut -f1 -d' ')
+        [ -z "$LDATTACH_PID" ] && $LDATTACH_CMD
+        [ -e /dev/gps0 ] || ln -s ${DEV_GPS} /dev/gps0
+        [ -e /dev/gpspps0 ] || ln -s /dev/pps0 /dev/gpspps0
+
+        # block here while the router's clock is sync'd with a time source
+        /usr/bin/logger -t $(/usr/bin/basename $0) "custom script attempting system clock synchronization [$$]"
+        /native/bin/ntpd -d -g -q -n -c /jffs/ntp/ntp.conf  # set clock and quit
+        /usr/bin/logger -t $(/usr/bin/basename $0) "custom script completed system clock synchronization [$$]"
+        set_ntp_ready 1
+
+        break
+      else
+        /sbin/lsmod | /bin/grep -F "usbserial" > /dev/null 2>&1 || /sbin/modprobe usbserial
+        /sbin/lsmod | /bin/grep -F "ftdi_sio" > /dev/null 2>&1 || /sbin/modprobe ftdi_sio
+        /sbin/lsmod | /bin/grep -F "pps_core" > /dev/null 2>&1 || /sbin/modprobe pps_core
+        /sbin/lsmod | /bin/grep -F "pps_ldisc" > /dev/null 2>&1 || /sbin/modprobe pps-ldisc
+        
+        let local N++
+        /bin/sleep 1
+      fi
+    done
+  
+    if [ $N -ge 30 ]; then
+      /usr/bin/logger -t $(/usr/bin/basename $0) "custom script timed out while attempting NTPD synchronization [$$]"
+    fi
+  fi
+ 
+  # start ntpd as unstoppable daemon and carry on
+  if [ "$(/usr/sbin/nvram get ntp_ready)" -eq "1" ]; then
+    /native/bin/ntpd -c /jffs/ntp/ntp.conf
+  fi
+fi

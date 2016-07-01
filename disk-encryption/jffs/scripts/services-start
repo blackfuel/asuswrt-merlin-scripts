@@ -1,0 +1,9 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()  {
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+  
+# start samba
+/bin/ps | /bin/grep smb | /bin/grep -v grep > /dev/null 2>&1 || /sbin/service start_samba

@@ -1,0 +1,102 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()
+{
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+  
+DEVICE_PATH=$1
+
+mount_swap()
+{
+  local luks_uuid="$1"
+  local mappername="swap-${luks_uuid}"
+  
+  if [ -b /dev/mapper/$mappername ]; then
+    /sbin/swapoff /dev/mapper/$mappername
+    /entware/sbin/cryptsetup luksClose $mappername
+  fi
+  
+  passphrase="$(/usr/bin/tr -cd !-~ < /dev/urandom | /usr/bin/head -c 200)"
+  /bin/echo -n "$passphrase" | /entware/sbin/cryptsetup --cipher=aes-cbc-essiv:sha256 --key-size=256 --batch-mode --uuid=$luks_uuid luksFormat $DEVICE_PATH
+  /bin/echo -n "$passphrase" | /entware/sbin/cryptsetup --batch-mode luksOpen $DEVICE_PATH $mappername
+  passphrase="" # forget about it
+  /sbin/mkswap /dev/mapper/$mappername
+  /sbin/swapon /dev/mapper/$mappername
+}
+
+mount_data()
+{
+  local luks_uuid="$1"
+  local mountname="$2"
+  local passphrase="$3"
+  local passtype="$4"
+  local mappername="data-${luks_uuid}"
+  
+  if [ ! -d "/mnt/$mountname" ]; then
+   /bin/mkdir -p /mnt/$mountname 
+   /bin/chown $(/usr/sbin/nvram get http_username):root /mnt/$mountname 
+   /bin/chmod a+rwx /mnt/$mountname
+  fi
+  
+  if [ -b /dev/mapper/$mappername ]; then
+    /bin/umount /dev/mapper/$mappername
+    /entware/sbin/cryptsetup luksClose $mappername
+  fi
+  
+  if [ "$passtype" == "file" ]; then
+    if [ -f "$passphrase" ]; then
+      /entware/sbin/cryptsetup --batch-mode luksOpen $DEVICE_PATH $mappername < "$passphrase"
+      rm -f "$passphrase" # forget about it
+    else
+      /usr/bin/logger -t $(/usr/bin/basename $0) "custom script passphrase file '$passphrase' was not found [$$]" 
+    fi
+  elif [ "$passtype" == "text" ]; then
+    /bin/echo -n "$passphrase" | /entware/sbin/cryptsetup --batch-mode luksOpen $DEVICE_PATH $mappername
+  else
+    /usr/bin/logger -t $(/usr/bin/basename $0) "custom script passphrase type '$passtype' was not recognized [$$]" 
+  fi
+  passphrase="" # forget about it
+  /bin/mount /dev/mapper/$mappername
+  /jffs/scripts/post-mount /tmp/mnt/$mountname
+}
+
+/sbin/lsmod | /bin/grep dm_mod > /dev/null 2>&1 || /sbin/modprobe dm-mod
+/sbin/lsmod | /bin/grep dm_crypt > /dev/null 2>&1 || /sbin/modprobe dm-crypt
+/sbin/lsmod | /bin/grep gf128mul > /dev/null 2>&1 || /sbin/modprobe gf128mul
+/sbin/lsmod | /bin/grep xts > /dev/null 2>&1 || /sbin/modprobe xts
+/sbin/lsmod | /bin/grep sha256_generic > /dev/null 2>&1 || /sbin/modprobe sha256_generic
+
+/entware/sbin/cryptsetup isLuks $DEVICE_PATH
+
+if [ $? == 0 ]; then
+
+  LUKS_UUID=$(/entware/sbin/cryptsetup luksUUID $DEVICE_PATH)
+
+  case "$LUKS_UUID" in
+  
+    "11111111-1111-1111-1111-111111111111" )
+      mount_swap "$LUKS_UUID"
+      ;;
+     
+    "22222222-2222-2222-2222-222222222222" )
+      mount_data "$LUKS_UUID" "data" "/tmp/passphrase.key" "file"
+      ;;
+    
+    "33333333-3333-3333-3333-333333333333" )
+      mount_data "$LUKS_UUID" "usbflash" "lol" "text"
+      ;;
+    
+    *)
+    
+      /usr/bin/logger -t $(/usr/bin/basename $0) "custom script LUKS_UUID=$LUKS_UUID was not recognized [$$]"
+      ;;
+      
+  esac
+
+else
+
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script device $DEVICE_PATH was not recognized [$$]"
+  
+fi

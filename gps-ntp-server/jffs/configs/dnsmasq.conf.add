@@ -1,0 +1,7 @@
+address=/.pool.ntp.org/192.168.1.1
+address=/ntp.ubuntu.com/192.168.1.1
+address=/time.nist.gov/192.168.1.1
+address=/time-nw.nist.gov/192.168.1.1
+address=/time-a.nist.gov/192.168.1.1
+address=/time-b.nist.gov/192.168.1.1
+address=/time.windows.com/192.168.1.1

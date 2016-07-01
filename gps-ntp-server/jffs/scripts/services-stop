@@ -1,0 +1,10 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()  {
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+  
+
+# save ntp drift file to jffs
+source /jffs/scripts/ntp-drift-update

@@ -1,0 +1,10 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()  {
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+  
+# synchronize the system clock with GPS time source
+source /jffs/scripts/ntp-start
+

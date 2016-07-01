@@ -1,0 +1,61 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()  {
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+  
+local WANIF="$1"
+local IPADDR=$(/usr/sbin/nvram get lan_ipaddr)
+local NETWORK=${IPADDR%.*}
+
+update_rule()
+{
+  local CMD="$1"
+  local CHAIN="$2"
+  local RULE="$3"
+  local ACTION="$4"
+  local RULENUM="$5"
+
+  [ "$ACTION" == "" ] && ACTION="insert"
+
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script update_rule \"$CMD\" \"$CHAIN\" \"$RULE\" \"$ACTION\" \"$RULENUM\" [$$]"
+  #/bin/echo update_rule $CMD $CHAIN $RULE $ACTION $RULENUM
+
+  if [ "${CMD#*iptables}" != "$CMD" ]; then
+
+    if [ "$ACTION" == "append" ]; then
+      $CMD -C $CHAIN $RULE > /dev/null 2>&1 || $CMD -A $CHAIN $RULE
+    elif [ "$ACTION" == "insert" ]; then
+      $CMD -C $CHAIN $RULE > /dev/null 2>&1 || $CMD -I $CHAIN $RULENUM $RULE
+    elif [ "$ACTION" == "delete" ]; then
+      $CMD -C $CHAIN $RULE > /dev/null 2>&1 && $CMD -D $CHAIN $RULE
+    else
+      /bin/echo "Invalid action."
+    fi
+
+  elif [ "${CMD#*ebtables}" != "$CMD" ]; then
+
+    $CMD -D $CHAIN $RULE
+    while [ $? == 0 ]; do
+      $CMD -D $CHAIN $RULE
+    done
+
+    if [ "$ACTION" == "append" ]; then
+      $CMD -A $CHAIN $RULE
+    elif [ "$ACTION" == "insert" ]; then
+      $CMD -I $CHAIN $RULENUM $RULE
+    elif [ "$ACTION" != "delete" ]; then
+      /bin/echo "Invalid action."
+    fi
+
+  fi
+}
+
+# redirect DNS requests to use the router DNS server
+update_rule "/usr/sbin/iptables -t nat" "PREROUTING" "-i br0 -s ${NETWORK}.0/24 -p tcp --dport 53 -j DNAT --to-destination ${IPADDR}"
+update_rule "/usr/sbin/iptables -t nat" "PREROUTING" "-i br0 -s ${NETWORK}.0/24 -p udp --dport 53 -j DNAT --to-destination ${IPADDR}"
+
+# redirect NTP requests to use the router NTP server
+update_rule "/usr/sbin/iptables -t nat" "PREROUTING" "-i br0 -s ${NETWORK}.0/24 -p tcp --dport 123 -j DNAT --to-destination ${IPADDR}"
+update_rule "/usr/sbin/iptables -t nat" "PREROUTING" "-i br0 -s ${NETWORK}.0/24 -p udp --dport 123 -j DNAT --to-destination ${IPADDR}"

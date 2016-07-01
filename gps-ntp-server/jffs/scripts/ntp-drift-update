@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# save ntp drift file to /jffs
+local NTPDRIFT_TMP=/tmp/etc/ntp/ntp.drift
+local NTPDRIFT_JFFS=/jffs/ntp/ntp.drift
+if [ -f "$NTPDRIFT_TMP" ]; then
+  if [ ! -f "$NTPDRIFT_JFFS" ] || [ $(/bin/date -r "$NTPDRIFT_TMP" +%s) -gt $(/bin/date -r "$NTPDRIFT_JFFS" +%s) ];  then
+    /bin/cp -p "$NTPDRIFT_TMP" "$NTPDRIFT_JFFS"
+  fi
+fi

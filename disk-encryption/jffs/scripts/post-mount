@@ -1,0 +1,16 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()  {
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+  
+MOUNT_POINT="$1"
+
+if [ "$MOUNT_POINT" == "/tmp/mnt/data" ]; then
+
+  [ ! -f /tmp/opt ] && /bin/ln -sf $MOUNT_POINT/entware.arm /tmp/opt
+  
+  # start Entware-NG on /opt
+  /opt/etc/init.d/rc.unslung start
+fi

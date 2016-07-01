@@ -1,0 +1,16 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()  {
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+  
+sleep 5
+
+# set system clock to the time of last system shutdown
+[ -f /jffs/clock-saved ] && /bin/date -u -s $(/bin/cat /jffs/clock-saved)   # && /usr/sbin/nvram set ntp_ready=1
+  
+# create mount points for fstab
+/bin/mkdir -p /tmp/mnt/data
+/bin/chown $(/usr/sbin/nvram get http_username):root /tmp/mnt/data
+/bin/chmod a+rwx /mnt/data
