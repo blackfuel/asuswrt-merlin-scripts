@@ -14,3 +14,7 @@ sleep 5
 /bin/mkdir -p /tmp/mnt/data
 /bin/chown $(/usr/sbin/nvram get http_username):root /tmp/mnt/data
 /bin/chmod a+rwx /mnt/data
+
+/bin/mkdir -p /tmp/mnt/usbflash
+/bin/chown $(/usr/sbin/nvram get http_username):root /tmp/mnt/usbflash
+/bin/chmod a+rwx /mnt/usbflash

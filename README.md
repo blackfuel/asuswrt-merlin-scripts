@@ -22,8 +22,7 @@ $ /entware/sbin/cryptsetup luksUUID /dev/sdb1
 33333333-3333-3333-3333-333333333333
 
 
-Update the pre-mount and services-stop scripts with these LUKS UUIDs to automatically mount the encrypted disk at boot time, and to un-mount it at shutdown. Unfortunately, there is no Asus /etc/crypttab, as seen in a modern Linux OS.  My example scripts show how to mount a disk with both an encrypted swap and encrypted data partition, and a USB flash drive with one encrypted data partition.
-
+Update the pre-mount and services-stop scripts with these LUKS UUIDs to automatically mount the encrypted disk at boot time, and to un-mount it at shutdown. Unfortunately, there is no Asus /etc/crypttab, as seen in a modern Linux OS.  My example scripts show how to mount a disk with both an encrypted swap and encrypted data partition, and a USB flash drive with one encrypted data partition.  Since we are mounting and unmounting the encrypted partitions ourselves (it is not done by the firmware), the scripts also show how Entware-NG is started and stopped when it is installed on the encrypted partition.  There are also Samba issues that are appropriately handled by the scripts.
 
 
 GPS-backed NTP server
