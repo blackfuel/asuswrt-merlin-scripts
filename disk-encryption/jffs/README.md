@@ -10,6 +10,8 @@ Since the mounting and unmounting of encrypted partitions is not automatically d
 
 2. Find out the LUKS UUIDs of your encrypted USB storage devices.  Your external USB storage device may initially be partitioned and formatted on Ubuntu or any other Linux distribution with LUKS enabled.  Mine was formatted (ext4 + LUKS) using the Ubuntu disk manager.  Once partitioned and formatted, connect it to the router to see the LUKS UUIDs.
 
+    **Example**
+    
     **`$ /entware/sbin/cryptsetup luksUUID /dev/sda1`**
     
     *`11111111-1111-1111-1111-111111111111`*
