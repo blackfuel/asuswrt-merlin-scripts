@@ -1,0 +1,13 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()  {
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+
+/bin/sleep 5
+
+# disable automatic loading of GSM modem kernel module
+/sbin/modprobe -r option
+/bin/mount -o bind /dev/null /lib/modules/2.6.36.4brcmarm/kernel/drivers/usb/option.ko
+
