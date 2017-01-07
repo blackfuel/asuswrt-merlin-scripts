@@ -1,5 +1,5 @@
-blackfuel / asuswrt-merlin-jffs
-===============================
+blackfuel / asuswrt-merlin-scripts
+==================================
 
 The Linux scripts and configuration files found here should be copied to the appropriate places in your router's /jffs folder.
 
