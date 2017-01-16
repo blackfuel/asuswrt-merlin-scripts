@@ -5,9 +5,9 @@ finish()  {
 }
 trap finish EXIT
   
-local WANIF="$1"
-local IPADDR=$(/usr/sbin/nvram get lan_ipaddr)
-local NETWORK=${IPADDR%.*}
+WANIF="$1"
+IPADDR=$(/usr/sbin/nvram get lan_ipaddr)
+NETWORK=${IPADDR%.*}
 
 update_rule()
 {

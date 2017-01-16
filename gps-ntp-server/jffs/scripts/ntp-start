@@ -1,5 +1,5 @@
 #!/bin/sh
-local DEV_GPS=/dev/ttyUSB0
+DEV_GPS=/dev/ttyUSB0
 
 set_ntp_ready()
 {
@@ -30,12 +30,12 @@ if [ $? -ne 0 ]; then
   if [ ! -e ${DEV_GPS} ]; then
     set_ntp_ready 0
       
-    local N=1
+    N=1
     while [ $N -lt 30 ]; do
       if [ -e ${DEV_GPS} ]; then
         /native/bin/setserial ${DEV_GPS} low_latency
-        local LDATTACH_CMD="/native/bin/ldattach pps ${DEV_GPS}"
-        local LDATTACH_PID=$(/bin/echo $(/bin/ps w | /bin/grep -i "$LDATTACH_CMD" | /bin/grep -v grep) | /usr/bin/cut -f1 -d' ')
+        LDATTACH_CMD="/native/bin/ldattach pps ${DEV_GPS}"
+        LDATTACH_PID=$(/bin/echo $(/bin/ps w | /bin/grep -i "$LDATTACH_CMD" | /bin/grep -v grep) | /usr/bin/cut -f1 -d' ')
         [ -z "$LDATTACH_PID" ] && $LDATTACH_CMD
         [ -e /dev/gps0 ] || ln -s ${DEV_GPS} /dev/gps0
         [ -e /dev/gpspps0 ] || ln -s /dev/pps0 /dev/gpspps0
@@ -53,7 +53,7 @@ if [ $? -ne 0 ]; then
         /sbin/lsmod | /bin/grep -F "pps_core" > /dev/null 2>&1 || /sbin/modprobe pps_core
         /sbin/lsmod | /bin/grep -F "pps_ldisc" > /dev/null 2>&1 || /sbin/modprobe pps-ldisc
         
-        let local N++
+        let N++
         /bin/sleep 1
       fi
     done

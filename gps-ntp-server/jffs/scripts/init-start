@@ -7,9 +7,10 @@ trap finish EXIT
 
 /bin/sleep 5
 
-# disable automatic loading of GSM modem kernel modules
+# disable automatic loading of GSM modem kernel modules in Asuswrt firmware
 /sbin/modprobe -r option
 /bin/mount -o bind /dev/null /lib/modules/2.6.36.4brcmarm/kernel/drivers/usb/option.ko
 /sbin/modprobe -r usb_wwan
 /bin/mount -o bind /dev/null /lib/modules/2.6.36.4brcmarm/kernel/drivers/usb/usb_wwan.ko
-
+/sbin/modprobe -r drxvi314
+/bin/mount -o bind /dev/null /lib/modules/2.6.36.4brcmarm/kernel/drivers/usb/Beceem_driver/drxvi314.ko

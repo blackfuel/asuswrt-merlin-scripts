@@ -29,7 +29,7 @@ umount_data()
 }
 
 # save clock
-[ "$(/usr/sbin/nvram get ntp_ready)" == "1" ] && /bin/date -u +%Y%m%d%H%M.%S > /jffs/clock-saved
+/bin/date -u +%Y%m%d%H%M.%S > /jffs/clock-saved
 
 # stop Entware-NG on /opt
 /opt/etc/init.d/rc.unslung stop

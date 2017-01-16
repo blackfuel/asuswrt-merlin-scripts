@@ -7,9 +7,9 @@ trap finish EXIT
   
 sleep 5
 
-# set system clock to the time of last system shutdown
-[ -f /jffs/clock-saved ] && /bin/date -u -s $(/bin/cat /jffs/clock-saved)   # && /usr/sbin/nvram set ntp_ready=1
-  
+# set router clock to the time of last system shutdown plus 48 seconds
+[ -f /jffs/clock-saved ] && CLOCK="$(/bin/cat /jffs/clock-saved)" && SECONDS=${CLOCK#*.} && SECONDS=${SECONDS#*0} && /bin/date -u -s ${CLOCK%.*}.$(($SECONDS + 48))   # && /usr/sbin/nvram set ntp_ready=1
+
 # create mount points for fstab
 /bin/mkdir -p /tmp/mnt/data
 /bin/chown $(/usr/sbin/nvram get http_username):root /tmp/mnt/data
