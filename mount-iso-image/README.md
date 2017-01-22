@@ -14,7 +14,7 @@ http://www.wsusoffline.net/
 /bin/mount -t iso9660 -o loop /path/to/image.iso /path/to/mountpoint
 ```
 
-**Just need an extra module (CONFIG_ISO9660_FS=m) because it must be loaded before mounting the ISO image.**
+**Just need an extra kernel module (CONFIG_ISO9660_FS=m) because it must be loaded before mounting the ISO image.**
 ```
 /sbin/modprobe isofs
 ```
