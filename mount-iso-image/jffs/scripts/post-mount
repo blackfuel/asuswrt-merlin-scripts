@@ -1,0 +1,28 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()  {
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+  
+MOUNT_POINT="$1"
+
+mount_iso_image() {
+  local imagepath="$1"
+  local mountpoint="$2"
+
+  /bin/mount | /bin/grep -qF "$mountpoint"
+  if [ $? -ne 0 ]; then
+    /sbin/modprobe isofs && /bin/mkdir -p $mountpoint && /bin/mount -t iso9660 -o loop $imagepath $mountpoint
+  fi
+}
+
+if [ "$MOUNT_POINT" == "/tmp/mnt/data" ]; then
+
+  mount_iso_image "/mnt/data/wsusoffline-images/wsusoffline-ofc-enu.iso" "/mnt/wsusoffline/ofc-enu"
+  mount_iso_image "/mnt/data/wsusoffline-images/wsusoffline-w61.iso" "/mnt/wsusoffline/w61"
+  mount_iso_image "/mnt/data/wsusoffline-images/wsusoffline-w61-x64.iso" "/mnt/wsusoffline/w61-x64"
+  mount_iso_image "/mnt/data/wsusoffline-images/wsusoffline-w100-x64.iso" "/mnt/wsusoffline/w100-x64"
+
+fi
+

@@ -1,0 +1,29 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()  {
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+CONFIG=$1
+source /usr/sbin/helper.sh
+
+#pc_insert "[global]" "client use spnego = no" $CONFIG
+#pc_replace "security = SHARE" "security = USER" "$CONFIG"
+#pc_replace "guest ok = no" "guest ok = yes" "$CONFIG"
+
+#echo "lanman auth = Yes" >> "$CONFIG"
+
+###########################################################################
+# Samba shares
+/bin/cat <<EOF >> "$CONFIG"
+
+[WSUSOFFLINE]
+        comment = WSUS Offline Updates
+        path = /mnt/wsusoffline
+        writeable = no
+        create mask = 0777
+        dos filetimes = yes
+        fake directory create times = yes
+
+EOF
+###########################################################################
