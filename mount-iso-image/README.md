@@ -1,6 +1,6 @@
 Mount an ISO Image
 ------------------
-Use case for mounting an ISO image and advertising it on a Samba share using the Blackfuel version of Asuswrt-Merlin firmware.
+A use case for mounting an ISO image and advertising it on a Samba share, using the Blackfuel version of the Asuswrt-Merlin firmware.
 
 There's an excellent tool for downloading and creating ISO images for all Microsoft Windows and Office updates. And it's possible to remove any updates you don't want installed. The ISO images may be copied to the router's external USB storage device and mounted read-only, so that all the Windows computers on the network may update themselves without connecting directly to Microsoft servers.
 
