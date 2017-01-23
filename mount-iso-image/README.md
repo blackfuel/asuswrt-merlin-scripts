@@ -19,7 +19,7 @@ However, you need an extra kernel module (CONFIG_ISO9660_FS=m); it must be loade
 /sbin/modprobe isofs
 ```
 
-Advertise the folder containing all mounted ISO images on a Samba share.  Note:  While posting this message, Cloudfare did not allow me to post the following script as-is; had to hide the Linux concatenation command in a variable.
+Advertise the folder containing all mounted ISO images on a Samba share.
 
 **/jffs/scripts/smb.postconf**
 ```
@@ -34,7 +34,7 @@ source /usr/sbin/helper.sh
 
 ###########################################################################
 # Samba shares
-CAT="cat" ; /bin/$CAT <<EOF >> "$CONFIG"
+/bin/cat <<EOF >> "$CONFIG"
 
 [WSUSOFFLINE]
         comment = WSUS Offline Updates
