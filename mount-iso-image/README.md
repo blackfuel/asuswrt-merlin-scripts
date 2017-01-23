@@ -4,7 +4,7 @@ A use case for mounting an ISO image and advertising it on a Samba share, using 
 
 There's an excellent tool for downloading and creating ISO images for all Microsoft Windows and Office updates. And it's possible to remove any updates you don't want installed. The ISO images may be copied to the router's external USB storage device and mounted read-only, so that all the Windows computers on the network may update themselves without connecting directly to Microsoft servers.
 
-On my router, I mount the ISO images using Asuswrt-Merlin and advertise them on a Samba share. Then I run the update tool on each computer manually. Afterwards I run the Microsoft Baseline Security Analyzer to verify that all critical updates have been applied. Here it is:
+On my router, I mount the ISO images using Asuswrt-Merlin and advertise them on a Samba share. Then I run the client update tool on each computer manually, to apply the updates. Afterwards, I use the Microsoft Baseline Security Analyzer to verify that all critical updates have been applied. Here it is:
 
 **WSUS Offline Update**  
 http://www.wsusoffline.net/
