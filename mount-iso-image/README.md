@@ -9,12 +9,12 @@ On my router, I mount the ISO images using Asuswrt-Merlin and advertise them on 
 **WSUS Offline Update**  
 http://www.wsusoffline.net/
 
-**Mounting an ISO image on the router is easy.**
+Mounting an ISO image on my router is easy.
 ```
 /bin/mount -t iso9660 -o loop /path/to/image.iso /path/to/mountpoint
 ```
 
-**However, you need an extra kernel module (CONFIG_ISO9660_FS=m); it must be loaded before mounting the ISO image.**
+However, you need an extra kernel module (CONFIG_ISO9660_FS=m); it must be loaded before mounting the ISO image.
 ```
 /sbin/modprobe isofs
 ```
