@@ -1,6 +1,6 @@
 Mount an ISO Image
 ------------------
-A use case for mounting an ISO image and advertising it on a Samba share of the router.
+A use case for mounting an ISO image on your router.
 
 There's an excellent tool for downloading and creating ISO images of security updates for Microsoft Windows and Office, for offline use. And it's possible to remove any updates that you don't want installed. The ISO images may be copied to the router's external USB storage device and mounted read-only, so that all Windows computers on the network may update themselves without ever connecting directly to Microsoft's servers.
 
