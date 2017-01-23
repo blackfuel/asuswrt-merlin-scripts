@@ -2,7 +2,7 @@ Mount an ISO Image
 ------------------
 A use case for mounting an ISO image and advertising it on a Samba share, using the Blackfuel version of the Asuswrt-Merlin firmware.
 
-There's an excellent tool for downloading and creating ISO images of security updates for Microsoft Windows and Office, for offline use. And it's possible to remove any updates you don't want installed. The ISO images may be copied to the router's external USB storage device and mounted read-only, so that all the Windows computers on the network may update themselves without connecting directly to Microsoft servers.
+There's an excellent tool for downloading and creating ISO images of security updates for Microsoft Windows and Office, for offline use. And it's possible to remove any updates that you don't want installed. The ISO images may be copied to the router's external USB storage device and mounted read-only, so that all Windows computers on the network may update themselves without ever connecting directly to Microsoft's servers.
 
 On my router, I mount the ISO images using Asuswrt-Merlin and advertise them on a Samba share. Then I run the client update tool on each computer manually, to apply the updates. Afterwards, I use the Microsoft Baseline Security Analyzer to verify that all critical updates have been applied. Here it is:
 
