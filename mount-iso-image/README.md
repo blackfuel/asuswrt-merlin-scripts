@@ -9,7 +9,7 @@ On my router, I mount the ISO images using Asuswrt-Merlin and advertise them on 
 **WSUS Offline Update**  
 http://www.wsusoffline.net/
 
-**Mounting an ISO image in Asuswrt-Merlin is easy**
+**Mounting an ISO image on the router is easy.**
 ```
 /bin/mount -t iso9660 -o loop /path/to/image.iso /path/to/mountpoint
 ```
