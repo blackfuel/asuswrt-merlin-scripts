@@ -10,11 +10,16 @@ source /usr/sbin/helper.sh
 #pc_insert "[global]" "client use spnego = no" $CONFIG
 #pc_replace "security = SHARE" "security = USER" "$CONFIG"
 #pc_replace "guest ok = no" "guest ok = yes" "$CONFIG"
-
 #echo "lanman auth = Yes" >> "$CONFIG"
 
-###########################################################################
-# Samba shares
+#################################################################################
+# samba shares
+
+# check if the external USB storage device has been mounted
+/bin/mount | /bin/grep -qF "/mnt/data"
+if [ $? -eq 0 ]; then
+
+# now configure the Samba shares
 /bin/cat <<EOF >> "$CONFIG"
 
 [WSUSOFFLINE]
@@ -26,4 +31,7 @@ source /usr/sbin/helper.sh
         fake directory create times = yes
 
 EOF
-###########################################################################
+
+fi
+
+#################################################################################
