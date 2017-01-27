@@ -1,0 +1,26 @@
+#!/bin/sh
+/usr/bin/logger -t $(/usr/bin/basename $0) "custom script started [$$]"
+finish()  {
+  /usr/bin/logger -t $(/usr/bin/basename $0) "custom script ended [$$]"
+}
+trap finish EXIT
+
+
+# stop Entware-ng
+if [ -f /opt/etc/init.d/rc.unslung ]; then
+  cd /
+  source /opt/etc/init.d/rc.unslung stop
+fi
+
+# stop Samba to release locked files
+cd /
+/sbin/service stop_samba
+
+# unmount the ISO images that reside on (any?) encrypted partition
+/bin/umount /mnt/wsusoffline/ofc-enu
+/bin/umount /mnt/wsusoffline/w61
+/bin/umount /mnt/wsusoffline/w61-x64
+/bin/umount /mnt/wsusoffline/w100-x64
+
+# unmount encrypted partition here, if any
+# ...
