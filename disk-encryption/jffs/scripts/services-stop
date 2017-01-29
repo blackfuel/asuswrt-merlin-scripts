@@ -28,8 +28,11 @@ umount_data()
   fi
 }
 
-# stop Entware-ng on /opt
-/opt/etc/init.d/rc.unslung stop
+# stop Entware-ng
+if [ -f /opt/etc/init.d/rc.unslung ]; then
+  cd /
+  source /opt/etc/init.d/rc.unslung stop
+fi
 
 # stop Samba to release locked files
 /sbin/service stop_samba
