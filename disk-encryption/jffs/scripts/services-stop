@@ -35,6 +35,7 @@ if [ -f /opt/etc/init.d/rc.unslung ]; then
 fi
 
 # stop Samba to release locked files
+cd /
 /sbin/service stop_samba
 
 # unmount the encrypted partitions and the swap partition
