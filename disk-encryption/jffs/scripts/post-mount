@@ -11,6 +11,9 @@ if [ "$MOUNT_POINT" == "/tmp/mnt/data" ]; then
 
   [ ! -f /tmp/opt ] && /bin/ln -sf $MOUNT_POINT/entware.arm /tmp/opt
   
-  # start Entware-NG on /opt
-  /opt/etc/init.d/rc.unslung start
+  # start Entware-ng
+  if [ -f /opt/etc/init.d/rc.unslung ]; then
+    source /opt/etc/init.d/rc.unslung start
+  fi
+
 fi
