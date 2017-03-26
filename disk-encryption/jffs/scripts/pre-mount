@@ -19,12 +19,12 @@ mount_swap()
   
   if [ -b /dev/mapper/$mappername ]; then
     /sbin/swapoff /dev/mapper/$mappername
-    /entware/sbin/cryptsetup luksClose $mappername
+    /sbin/cryptsetup luksClose $mappername
   fi
   
   passphrase="$(/usr/bin/tr -cd !-~ < /dev/urandom | /usr/bin/head -c 50)"
-  /bin/echo -n "$passphrase" | /entware/sbin/cryptsetup --cipher=aes-cbc-essiv:sha256 --key-size=256 --batch-mode --uuid=$luks_uuid luksFormat $DEVICE_PATH
-  /bin/echo -n "$passphrase" | /entware/sbin/cryptsetup --batch-mode luksOpen $DEVICE_PATH $mappername
+  /bin/echo -n "$passphrase" | /sbin/cryptsetup --cipher=aes-cbc-essiv:sha256 --key-size=256 --batch-mode --uuid=$luks_uuid luksFormat $DEVICE_PATH
+  /bin/echo -n "$passphrase" | /sbin/cryptsetup --batch-mode luksOpen $DEVICE_PATH $mappername
   passphrase="" # forget about it
   /sbin/mkswap /dev/mapper/$mappername
   /sbin/swapon /dev/mapper/$mappername
@@ -47,19 +47,19 @@ mount_data()
   
   if [ -b /dev/mapper/$mappername ]; then
     /bin/umount /dev/mapper/$mappername
-    /entware/sbin/cryptsetup luksClose $mappername
+    /sbin/cryptsetup luksClose $mappername
   fi
   
   if [ "$passtype" == "file" ]; then
     if [ -f "$passphrase" ]; then
-      /entware/sbin/cryptsetup --batch-mode luksOpen $DEVICE_PATH $mappername < "$passphrase"
+      /sbin/cryptsetup --batch-mode luksOpen $DEVICE_PATH $mappername < "$passphrase"
       result_unlock=$?
       /bin/rm -f "$passphrase"
     else
       /usr/bin/logger -t $(/usr/bin/basename $0) "custom script passphrase file '$passphrase' was not found [$$]" 
     fi
   elif [ "$passtype" == "text" ]; then
-    /bin/echo -n "$passphrase" | /entware/sbin/cryptsetup --batch-mode luksOpen $DEVICE_PATH $mappername
+    /bin/echo -n "$passphrase" | /sbin/cryptsetup --batch-mode luksOpen $DEVICE_PATH $mappername
     result_unlock=$?
   else
     /usr/bin/logger -t $(/usr/bin/basename $0) "custom script passphrase type '$passtype' was not recognized [$$]" 
@@ -78,11 +78,11 @@ mount_data()
 /sbin/modprobe xts
 /sbin/modprobe sha256_generic
 
-/entware/sbin/cryptsetup isLuks $DEVICE_PATH
+/sbin/cryptsetup isLuks $DEVICE_PATH
 
 if [ $? == 0 ]; then
 
-  LUKS_UUID=$(/entware/sbin/cryptsetup luksUUID $DEVICE_PATH)
+  LUKS_UUID=$(/sbin/cryptsetup luksUUID $DEVICE_PATH)
 
   case "$LUKS_UUID" in
   
