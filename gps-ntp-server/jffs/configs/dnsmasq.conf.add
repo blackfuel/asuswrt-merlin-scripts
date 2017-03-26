@@ -1,1 +1,1 @@
-address=/.pool.ntp.org/ntp.ubuntu.com/time.nist.gov/time-nw.nist.gov/time-a.nist.gov/time-b.nist.gov/time.windows.com/192.168.1.1
+address=/.pool.ntp.org/ntp.ubuntu.com/.timefreq.bldrdoc.gov/time.nist.gov/time-nw.nist.gov/time-a.nist.gov/time-b.nist.gov/time-c.nist.gov/time-d.nist.gov/time.windows.com/tick.usno.navy.mil/tock.usno.navy.mil/ntp.usno.navy.mil/ntp2.usno.navy.mil/tick.usnogps.navy.mil/tock.usnogps.navy.mil/ntp.rokutime.com/192.168.1.1
