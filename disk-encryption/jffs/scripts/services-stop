@@ -13,7 +13,7 @@ umount_swap()
   
   if [ -b /dev/mapper/$mappername ]; then
     /sbin/swapoff /dev/mapper/$mappername
-    /entware/sbin/cryptsetup luksClose $mappername
+    /sbin/cryptsetup luksClose $mappername
   fi
 }
 
@@ -24,7 +24,7 @@ umount_data()
   
   if [ -b /dev/mapper/$mappername ]; then
     /bin/umount /dev/mapper/$mappername
-    /entware/sbin/cryptsetup luksClose $mappername
+    /sbin/cryptsetup luksClose $mappername
   fi
 }
 
