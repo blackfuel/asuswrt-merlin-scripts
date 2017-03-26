@@ -12,15 +12,15 @@ Since the mounting and unmounting of encrypted partitions is not automatically d
 
     **Example**
     
-    **`$ /entware/sbin/cryptsetup luksUUID /dev/sda1`**
+    **`$ cryptsetup luksUUID /dev/sda1`**
     
     *`11111111-1111-1111-1111-111111111111`*
 
-    **`$ /entware/sbin/cryptsetup luksUUID /dev/sda2`**
+    **`$ cryptsetup luksUUID /dev/sda2`**
 
     *`22222222-2222-2222-2222-222222222222`*
 
-    **`$ /entware/sbin/cryptsetup luksUUID /dev/sdb1`**
+    **`$ cryptsetup luksUUID /dev/sdb1`**
 
     *`33333333-3333-3333-3333-333333333333`*
 
